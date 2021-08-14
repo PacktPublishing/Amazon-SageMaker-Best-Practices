@@ -1,0 +1,48 @@
+  
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+
+<div id="map" style="height: 440px; border: 1px solid #AAA;"></div>
+        <script> 
+var map = L.map( 'map', {
+    center: [{{ task.input.lat }}, {{ task.input.lon }}],
+    minZoom: 2,
+    zoom:5
+});
+            L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    subdomains: ['a','b','c']
+}).addTo( map );
+            L.marker( [{{ task.input.lat }},{{ task.input.lon }}]).addTo( map );
+        </script>
+
+<crowd-form>
+    <crowd-classifier
+      name="category"
+      categories='["good","bad"]'
+      header="Select the most relevant label"
+    >
+      <classification-target>
+        {{ task.input.metric }}
+      </classification-target>
+      
+      <full-instructions header="Text Categorization Instructions">
+        <p><strong>Good</strong> air quality, safe for outdoor exercise for those with asthma</p>
+        <p><strong>Bad</strong> air quality, not safe for outdoor exercise for those with asthma</p>
+      </full-instructions>
+
+      <short-instructions>
+       Choose the most relevant label for this air measurement. 
+      </short-instructions>
+    </crowd-classifier>
+</crowd-form>
+
+
+
+
+

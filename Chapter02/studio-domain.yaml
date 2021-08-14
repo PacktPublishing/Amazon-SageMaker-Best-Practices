@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Metadata: 
+  License: Apache-2.0
+Description: 'CloudFormation to create new Studio Domain if one does not exist'
+Parameters:
+  DomainName:
+    AllowedPattern: '[A-Za-z0-9-]{1,63}'
+    ConstraintDescription: Maximum of 63 alphanumeric characters. Can include hyphens but not spaces. 
+    Description: SageMaker Studio Domain Name
+    MaxLength: '63'
+    MinLength: '1'
+    Type: String
+    Default: 'StudioDomain'
+  VPCId:
+    Description: The ID of the VPC that Studio uses for communication
+    Type: String
+    Default: 'Replace with your VPC ID'
+  VPCSubnetIds:
+    Description: Choose which subnets Studio should use
+    Type: 'List<AWS::EC2::Subnet::Id>'
+    Default: 'subnet-1,subnet-2'
+  VPCSecurityGroupIds:
+    Description: The VPC security group IDs, in the form sg-xxxxxxxx.  
+    Type: CommaDelimitedList
+    Default: 'Replace with the security group id(s) for your VPC'
+  KMSKeyId:
+    Description: The ARN of the KMS Key to use for encrypting storage attached to notebook
+    Type: String
+    Default: 'Replace with your KMS Key ARN'
+Resources:
+  StudioDomain:
+    Type: AWS::SageMaker::Domain
+    Properties: 
+      AppNetworkAccessType: VpcOnly
+      AuthMode: IAM
+      DefaultUserSettings: 
+          ExecutionRole: !GetAtt SageMakerRole.Arn
+          SecurityGroups: !Ref VPCSecurityGroupIds
+      DomainName: !Ref DomainName
+      KmsKeyId: !Ref KMSKeyId
+      SubnetIds: !Ref VPCSubnetIds
+      VpcId: !Ref VPCId
+  SageMakerRole: 
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "sagemaker.amazonaws.com"
+            Action:              
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+        - "arn:aws:iam::aws:policy/IAMReadOnlyAccess"
+        - "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess"
+        - "arn:aws:iam::aws:policy/AWSLambda_FullAccess" 
+        - "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
+Outputs:
+  SageMakerDomainID:
+    Description: "ID for the Studio Domain"
+    Value: !Ref StudioDomain

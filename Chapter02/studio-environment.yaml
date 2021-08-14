@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Metadata: 
+  License: Apache-2.0
+Description: 'Example data science environment creating a new SageMaker Studio User in an existing Studio Domain using an existing VPC.  This template also includes the creation of an Amazon S3 Bucket and IAM Role.'
+Parameters:
+  StudioDomainID:
+    AllowedPattern: '[A-Za-z0-9-]{1,63}'
+    Description: ID of the Studio Domain where user should be created (ex. d-xxxnxxnxxnxn)
+    Default: d-xxxnxxnxxnxn
+    Type: String
+  Team:
+    AllowedValues:
+      - weatherproduct
+      - weatherresearch  
+    Description: Team name for user working in associated environment
+    Default: weatherproduct
+    Type: String
+  UserProfileName:
+    Description: User profile name
+    AllowedPattern: '^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}'
+    Type: String
+    Default: 'UserName'
+  VPCSecurityGroupIds:
+    Description: The VPC security group IDs, in the form sg-xxxxxxxx.  
+    Type: CommaDelimitedList
+    Default: 'Replace with the security group id(s) for your VPC'
+Resources:
+  StudioUser:
+    Type: AWS::SageMaker::UserProfile
+    Properties: 
+      DomainId: !Ref StudioDomainID
+      Tags: 
+        - Key: "Environment"
+          Value: "Development"
+        - Key: "Team"
+          Value: !Ref Team
+      UserProfileName: !Ref UserProfileName
+      UserSettings: 
+        ExecutionRole: !GetAtt SageMakerRole.Arn
+        SecurityGroups: !Ref VPCSecurityGroupIds
+  
+  SageMakerRole: 
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "sagemaker.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+        - "arn:aws:iam::aws:policy/IAMReadOnlyAccess"
+        - "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess"
+        - "arn:aws:iam::aws:policy/AWSLambda_FullAccess"
+ 
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: 
+        Fn::Join:
+          - '-'
+          - - datascience-environment-studio
+            - !Ref UserProfileName
+            - Fn::Select:
+                - 4
+                - Fn::Split:
+                    - '-'
+                    - Fn::Select:
+                        - 2
+                        - Fn::Split:
+                            - /
+                            - Ref: AWS::StackId
+
+Outputs:
+  S3BucketARN:
+    Description: "ARN for the S3 Bucket"
+    Value: !Ref S3Bucket
+
