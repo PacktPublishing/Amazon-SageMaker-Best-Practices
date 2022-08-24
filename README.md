@@ -52,6 +52,9 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 ### Related products <Other books you may enjoy>
 * Learn Amazon SageMaker[[Packt]](https://www.packtpub.com/product/learn-amazon-sagemaker/9781800208919) [[Amazon]](https://www.amazon.com/Learn-Amazon-SageMaker-developers-scientists/dp/180020891X)
 
+## Errata 
+ * Page 142 (Code snippet under the line "Now, we must configure the PyTorch estimator by using the infrastructure and profiler configuration as parameters:"): Object Name is **pt_estimator** _should be_ **estimator**
+
 ## Get to Know the Authors
 **Sireesha Muppala**
 She is a Principal Enterprise Solutions Architect, AI/ML at Amazon Web Services (AWS). Sireesha holds a PhD in computer science and post-doctorate from the University of Colorado. She is a prolific content creator in the ML space with multiple journal articles, blogs, and public speaking engagements. Sireesha is a co-creator and instructor of the Practical Data Science specialization on Coursera.
