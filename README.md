@@ -64,3 +64,7 @@ He is a Principal Solution Architect at AWS. He holds an MSEE from the Universit
 
 **Shelbee Eigenbrode**
 She is a Principal AI and ML Specialist Solutions Architect at AWS. She holds six AWS certifications and has been in technology for 23 years, spanning multiple industries, technologies, and roles. She is currently focusing on combining her DevOps and ML background to deliver and manage ML workloads at scale.
+### Download a free PDF
+
+ <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
+<p align="center"> <a href="https://packt.link/free-ebook/9781801070522">https://packt.link/free-ebook/9781801070522 </a> </p>
